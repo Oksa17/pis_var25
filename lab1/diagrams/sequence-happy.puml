@@ -1,1 +1,29 @@
+@startuml
+actor "🍕 Голодный юзер" as User
+participant ": Рецепто-генератор" as App
+participant ": Хранилище ингредиентов" as Storage
+participant ": AI-решатель" as AI
 
+User -> App: "Что сготовить из того, что есть?"
+activate App
+
+App -> Storage: getIngredients()
+activate Storage
+Storage --> App: [яйца, хлеб, молоко, лук]
+deactivate Storage
+
+App -> AI: matchRecipe(ingredients)
+activate AI
+AI --> App: Recipe { name: "Гренки с яйцом и луком" }
+deactivate AI
+
+App -> User: "Держи рецепт! Гренки с яйцом и луком 🍳"
+
+User -> App: "Погнали, давай чек-лист"
+App -> User: "1. Порезать хлеб\n2. Взбить яйца с молоком\n3. Обжарить лук\n4. Обмакнуть хлеб\n5. Жарить до корочки"
+
+User -> App: "Готово, спасибо!"
+App -> User: "Оцени рецепт от 1 до 5 ★"
+
+deactivate App
+@enduml
