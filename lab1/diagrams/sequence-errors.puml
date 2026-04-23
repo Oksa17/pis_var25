@@ -1,0 +1,37 @@
+@startuml
+actor "🍕 Голодный юзер" as User
+participant ": Рецепто-генератор" as App
+participant ": Хранилище ингредиентов" as Storage
+participant ": AI-решатель" as AI
+
+User -> App: "Что сготовить из того, что есть?"
+activate App
+
+App -> Storage: getIngredients()
+activate Storage
+Storage --> App: [яйца (просрочены на 3 дня), хлеб, лук]
+deactivate Storage
+
+App -> App: проверка свежести...
+note right: О, яйца тухлые 💀
+
+alt просроченный ингредиент найден
+  App -> User: "В холодильнике тухлые яйца 😨\nРецепт без яиц?"
+  User -> App: "Да, ищи без яиц"
+  
+  App -> AI: matchRecipe([хлеб, лук])
+  AI --> App: Recipe { name: "Жареный лук с хлебом, печалька" }
+  App -> User: "Вот что можно... но лучше сходи в магазин за яйцами"
+  
+else лимит запросов превышен
+  App -> App: проверка лимита (10/10 за час)
+  App -> User: "Ты сегодня уже 10 рецептов нагенерил!\nОтдохни 15 минут, кухня остывает 🧊"
+  
+else AI сервис не отвечает
+  App -> AI: matchRecipe(...)
+  AI --> App: timeout ❌
+  App -> User: "Поваренок GPT уснул 😴\nДержи базовый рецепт из кэша: Бутерброд с луком"
+end
+
+deactivate App
+@enduml
